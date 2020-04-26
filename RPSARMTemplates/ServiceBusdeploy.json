@@ -1,8 +1,91 @@
 ﻿{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {},
-  "resources": [],
-  "outputs": {}
+  "parameters": {
+    "serviceBusNamespace": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 25
+    },
+    "serviceBusNamespaceLocation": {
+      "type": "string",
+      "allowedValues": [
+        "Central India",
+        "Center US",
+        "East US",
+        "North Europe",
+        "West Europe"
+      ],
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "serviceBusQueueName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 25
+    },
+    "serviceBusTopicName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 25
+    }
+  },
+  "variables": {
+    "serviceBusNamespaceUniqueName": "[concat(parameters('serviceBusNamespace'),uniqueString(resourceGroup().id))]",
+    "serviceBusQueueUniqueName": "[concat(parameters('serviceBusQueueName'),newGuid())]",
+    "serviceBusTopicUniqueName": "[concat(parameters('serviceBusTopicName'),newGuid())]",
+    "defaultSASKeyName": "RootManageSharedAccessKey",
+    "serviceBusApiVersion": "2018-01-01-preview",
+    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules',variables('serviceBusNamespaceUniqueName'),variables('defaultSASKeyName'))]"
+  },
+  "resources": [
+    {
+      "metadata": {
+        "description": "This template definition craetes Service Bus Namespace and a queue"
+      },
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2018-01-01-preview",
+      "name": "[variables('serviceBusNamespaceUniqueName')]",
+      "location": "[parameters('serviceBusNamespaceLocation')]",
+      "sku": {
+        "tier": "Standard",
+        "capacity": 2,
+        "name": "Standard"
+      },
+      "properties": {},
+      "resources": [
+        {
+          "type": "queues",
+          "apiVersion": "2017-04-01",
+          "name": "[variables('serviceBusQueueUniqueName')]",
+          "dependsOn": [
+            "[variables('serviceBusNamespaceUniqueName')]"
+          ],
+          "properties": {
+            "maxSizeInMegabytes": 4096
+          }
+        },
+        {
+          "type": "topics",
+          "apiVersion": "2017-04-01",
+          "name": "[variables('serviceBusTopicUniqueName')]",
+          "dependsOn": [
+            "[variables('serviceBusNamespaceUniqueName')]"
+          ],
+          "properties": {
+            "maxSizeInMegabytes": 4096
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "serviceBusNamespaceConString": {
+      "type": "string",
+      "value": "[listKeys(variables('authRuleResourceId'),variables('serviceBusApiVersion')).primaryConnectionString]"
+    },
+    "serviceBusSASPrimaryKey": {
+      "type": "string",
+      "value": "[listKeys(variables('authRuleResourceId'),variables('serviceBusApiVersion')).keys[0]]"
+    }
+  }
 }

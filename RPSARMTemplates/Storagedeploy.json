@@ -36,10 +36,19 @@
         "Premium_ZRS"
       ],
       "defaultValue": "Standard_LRS"
+    },
+    "blobContainerName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 20,
+      "metadata": {
+        "description": "This parameter assigns a name to Blob container"
+      }
     }
   },
   "variables": {
-    "storageUniqueName": "[concat(parameters('storageName'),uniqueString(resourceGroup().id))]"
+    "storageUniqueName": "[concat(parameters('storageName'),uniqueString(resourceGroup().id))]",
+    "blobContainerUniqueName": "[concat(parameters('blobContainerName'),newGuid())]"
   },
   "resources": [
     {
@@ -55,12 +64,32 @@
       "properties": {
         "accessTier": "Hot",
         "supportsHttpsTrafficOnly": true
-      }
+      },
+      "resources": [
+        {
+          "type": "containers",
+          "apiVersion": "2019-06-01",
+          "name": "[variables('blobContainerUniqueName')]",
+          "dependsOn": [
+            "[variables('storageUniqueName')]"
+          ],
+          "properties": {
+            "publicAccess": "None"
+          },
+          "metadata": {
+            "description": "This resource definition creates a blob container in storage account"
+          }
+        }
+      ]
     }
   ],
   "outputs": {
     "storageAccountEndpoint": {
       "type": "object",
+      "value": "[reference(variables('storageUniqueName')).primaryEndpoints]"
+    },
+    "storageContainerEndpoint": {
+      "type": "string",
       "value": "[reference(variables('storageUniqueName')).primaryEndpoints]"
     }
   }

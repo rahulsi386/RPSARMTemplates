@@ -1,3 +1,67 @@
 ﻿{
-
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 25
+    },
+    "storageLocation": {
+      "type": "string",
+      "allowedValues": [
+        "Central India",
+        "Center US",
+        "East US",
+        "North Europe",
+        "West Europe"
+      ],
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "storageType": {
+      "type": "string",
+      "allowedValues": [
+        "BlobStorage",
+        "StorageV2"
+      ],
+      "defaultValue": "StorageV2"
+    },
+    "storageSKU": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Premium_LRS",
+        "Premium_ZRS"
+      ],
+      "defaultValue": "Standard_LRS"
+    }
+  },
+  "variables": {
+    "storageUniqueName": "[concat(parameters('storageName'),uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('storageUniqueName')]",
+      "location": "[parameters('storageLocation')]",
+      "kind": "[parameters('storageType')]",
+      "sku": {
+        "name": "[parameters('storageSKU')]",
+        "tier": "[if(contains(parameters('storageSKU'),'Standard'),'Standard','Premium' )]"
+      },
+      "properties": {
+        "accessTier": "Hot",
+        "supportsHttpsTrafficOnly": true
+      }
+    }
+  ],
+  "outputs": {
+    "storageAccountEndpoint": {
+      "type": "object",
+      "value": "[reference(variables('storageUniqueName')).primaryEndpoints]"
+    }
+  }
 }

@@ -1,3 +1,75 @@
 ﻿{
-
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vaultName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 15,
+      "defaultValue": "rpsVault"
+    },
+    "vaultLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "Central India",
+        "Center US",
+        "East US",
+        "North Europe",
+        "West Europe"
+      ]
+    },
+    "vaultAppId": {
+      "type": "string"
+    },
+    "vaultObjectId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "vaultUniqueName": "[concat(parameters('vaultName'),uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "metadata": {
+        "comments": "The template provisions Key vault and creates access policy for an app id"
+      },
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2016-10-01",
+      "name": "[variables('vaultUniqueName')]",
+      "location": "[parameters('vaultLocation')]",
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "[subscription().tenantId]",
+        "enableSoftDelete": false,
+        "createMode": "default",
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "applicationId": "[parameters('vaultAppId')]",
+            "objectId": "[parameters('vaultObjectId')]",
+            "permissions": {
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "keys": [
+                "Get",
+                "List"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "keyVaultEndpoint": {
+      "type": "object",
+      "value": "[reference(variables('vaultUniqueName')).primaryEndpoints]"
+    }
+  }
 }

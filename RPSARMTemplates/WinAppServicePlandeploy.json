@@ -2,10 +2,80 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "appServicePlanName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 25
+    },
+    "appServicePlanLocation": {
+      "type": "string",
+      "allowedValues": [
+        "Central India",
+        "Center US",
+        "East US",
+        "North Europe",
+        "West Europe"
+      ],
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "appServicePlanSKUs": {
+      "type": "string",
+      "allowedValues": [
+        "S1",
+        "S2",
+        "S3",
+        "P1V2",
+        "P2V2",
+        "P3V3"
+      ],
+      "defaultValue": "S1"
+    },
+    "appServiceName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 25
+    }
+
   },
   "variables": {
+    "appServicePlanUniqueName": "[concat(parameters('appServicePlanName'),resourceGroup().id)]",
+    "appServiceUniqueName": "[concat(parameters('appServiceName'),resourceGroup().id)]"
   },
   "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2018-02-01",
+      "name": "[variables('appServicePlanUniqueName')]",
+      "location": "[parameters('appServicePlanLocation')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSKUs')]"
+      },
+      "properties": {
+        "reserved": false,
+        "targetWorkerCount": 3
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('appServiceUniqueName')]",
+      "location": "[parameters('appServicePlanLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanUniqueName'))]"
+      ],
+      "properties": {
+        "httpsOnly": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanUniqueName'))]",
+        "siteConfig": {
+          "alwaysOn": true,
+          "autoHealEnabled": true,
+          "appSettings": [
+
+          ],
+          "connectionStrings": []
+        }
+      }
+    }
   ],
   "outputs": {
   }

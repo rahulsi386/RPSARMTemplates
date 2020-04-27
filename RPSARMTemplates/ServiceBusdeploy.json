@@ -31,8 +31,8 @@
   },
   "variables": {
     "serviceBusNamespaceUniqueName": "[concat(parameters('serviceBusNamespace'),uniqueString(resourceGroup().id))]",
-    "serviceBusQueueUniqueName": "[concat(parameters('serviceBusQueueName'),newGuid())]",
-    "serviceBusTopicUniqueName": "[concat(parameters('serviceBusTopicName'),newGuid())]",
+    "serviceBusQueueUniqueName": "[concat(parameters('serviceBusQueueName'),resourceGroup().id)]",
+    "serviceBusTopicUniqueName": "[concat(parameters('serviceBusTopicName'),resourceGroup().id)]",
     "defaultSASKeyName": "RootManageSharedAccessKey",
     "serviceBusApiVersion": "2018-01-01-preview",
     "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules',variables('serviceBusNamespaceUniqueName'),variables('defaultSASKeyName'))]"

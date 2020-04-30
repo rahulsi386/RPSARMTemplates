@@ -72,7 +72,12 @@
             "[variables('serviceBusNamespaceUniqueName')]"
           ],
           "properties": {
-            "maxSizeInMegabytes": 4096
+            "maxSizeInMegabytes": 4096,
+            "enablePartitioning": true,
+            "metadata": {
+              "description": "The Time to Live properties takes vaule in ISO 8601 format which is P1Y3M10DT1H13M23S where P stands for period and T for Time"
+            }
+            "defaultMessageTimeToLive": "P14D"
           }
         }
       ]
@@ -89,3 +94,5 @@
     }
   }
 }
+
+

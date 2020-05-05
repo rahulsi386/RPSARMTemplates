@@ -5,7 +5,7 @@
     "storageName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 35
+      "maxLength": 23
     },
     "storageLocation": {
       "type": "string",
@@ -47,8 +47,8 @@
     }
   },
   "variables": {
-    "storageUniqueName": "[concat('az-storage-',parameters('storageName'))]",
-    "blobContainerUniqueName": "[concat('container-',parameters('blobContainerName'))]"
+    "storageUniqueName": "[concat(parameters('storageName'),'storage')]",
+    "blobContainerUniqueName": "[concat(parameters('blobContainerName'),'container')]"
   },
   "resources": [
     {

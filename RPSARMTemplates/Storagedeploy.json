@@ -48,7 +48,7 @@
   },
   "variables": {
     "storageUniqueName": "[concat('az-storage-',parameters('storageName'))]",
-    "blobContainerUniqueName": "[concat(parameters('blobContainerName'),newGuid())]"
+    "blobContainerUniqueName": "[concat('container-',parameters('blobContainerName'))]"
   },
   "resources": [
     {

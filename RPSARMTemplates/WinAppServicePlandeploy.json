@@ -5,7 +5,7 @@
     "appServicePlanName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25
+      "maxLength": 35
     },
     "appServicePlanLocation": {
       "type": "string",
@@ -16,7 +16,7 @@
         "North Europe",
         "West Europe"
       ],
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "West Europe"
     },
     "appServicePlanSKUs": {
       "type": "string",
@@ -33,13 +33,13 @@
     "appServiceName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25
+      "maxLength": 35
     }
 
   },
   "variables": {
-    "appServicePlanUniqueName": "[concat(parameters('appServicePlanName'),resourceGroup().id)]",
-    "appServiceUniqueName": "[concat(parameters('appServiceName'),resourceGroup().id)]"
+    "appServicePlanUniqueName": "[concat('asp-',parameters('appServicePlanName'))]",
+    "appServiceUniqueName": "[concat('webapp-',parameters('appServiceName'))]"
   },
   "resources": [
     {
@@ -51,8 +51,11 @@
         "name": "[parameters('appServicePlanSKUs')]"
       },
       "properties": {
+        "metadata": {
+          "description": "reserved equals to false means Windows app service plan"
+        },
         "reserved": false,
-        "targetWorkerCount": 3
+        "targetWorkerCount": 2
       }
     },
     {

@@ -68,6 +68,7 @@
       "resources": [
         {
           "type": "containers",
+          "apiVersion": "2018-03-01-preview",
           "name": "[variables('blobContainerUniqueName')]",
           "dependsOn": [
             "[variables('storageUniqueName')]"

@@ -67,14 +67,15 @@
       },
       "resources": [
         {
-          "type": "containers",
-          "apiVersion": "2018-07-01",
+          "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+          "apiVersion": "2019-06-01",
           "name": "[variables('blobContainerUniqueName')]",
           "dependsOn": [
             "[variables('storageUniqueName')]"
           ],
           "properties": {
-            
+
+
           },
           "metadata": {
             "description": "This resource definition creates a blob container in storage account"

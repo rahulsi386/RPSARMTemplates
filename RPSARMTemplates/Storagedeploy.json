@@ -68,13 +68,13 @@
       "resources": [
         {
           "type": "containers",
-          "apiVersion": "2018-03-01-preview",
+          "apiVersion": "2018-07-01",
           "name": "[variables('blobContainerUniqueName')]",
           "dependsOn": [
             "[variables('storageUniqueName')]"
           ],
           "properties": {
-            "publicAccess": "None"
+            
           },
           "metadata": {
             "description": "This resource definition creates a blob container in storage account"

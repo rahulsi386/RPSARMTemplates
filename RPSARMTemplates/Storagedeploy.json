@@ -5,7 +5,7 @@
     "storageName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25
+      "maxLength": 35
     },
     "storageLocation": {
       "type": "string",
@@ -16,7 +16,7 @@
         "North Europe",
         "West Europe"
       ],
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "West Europe"
     },
     "storageType": {
       "type": "string",
@@ -47,7 +47,7 @@
     }
   },
   "variables": {
-    "storageUniqueName": "[concat(parameters('storageName'),uniqueString(resourceGroup().id))]",
+    "storageUniqueName": "[concat('az-storage-',parameters('storageName'))]",
     "blobContainerUniqueName": "[concat(parameters('blobContainerName'),newGuid())]"
   },
   "resources": [

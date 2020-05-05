@@ -5,7 +5,7 @@
     "eventHubNamespaceName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25,
+      "maxLength": 35,
       "metadata": {
         "description": "This parameter specifies the name of EventHub namespace"
       }
@@ -19,19 +19,19 @@
         "North Europe",
         "West Europe"
       ],
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "West Europe"
     },
     "hubName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25,
+      "maxLength": 35,
       "metadata": {
         "description": "This parameter specifies the name of the Hub in the namespace"
       }
     }
   },
   "variables": {
-    "eventHubNamespaceUniqueName": "[concat(parameters('eventHubNamespaceName'),newGuid())]",
+    "eventHubNamespaceUniqueName": "[concat('evthub-ns-',parameters('eventHubNamespaceName'))]",
     "hubUniqueName": "[concat(parameters('hubName'),newGuid())]",
     "defaultSASKeyName": "RootManageSharedAccessKey",
     "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules',variables('eventHubNamespaceUniqueName'),variables('defaultSASKeyName'))]",
@@ -47,7 +47,9 @@
         "name": "Standard",
         "tier": "Standard"
       },
-      "properties": {},
+      "properties": {
+        "maximumThroughputUnits": 1
+      },
       "resources": [
         {
           "type": "eventhubs",

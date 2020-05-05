@@ -53,7 +53,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2019-04-01",
+      "apiVersion": "2019-06-01",
       "name": "[variables('storageUniqueName')]",
       "location": "[parameters('storageLocation')]",
       "kind": "[parameters('storageType')]",
@@ -68,7 +68,6 @@
       "resources": [
         {
           "type": "containers",
-          "apiVersion": "2019-04-01",
           "name": "[variables('blobContainerUniqueName')]",
           "dependsOn": [
             "[variables('storageUniqueName')]"

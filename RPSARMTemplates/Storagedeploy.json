@@ -48,7 +48,8 @@
   },
   "variables": {
     "storageUniqueName": "[concat(parameters('storageName'),'storage')]",
-    "blobContainerUniqueName": "[concat(parameters('blobContainerName'),'container')]"
+    "blobContainerUniqueName": "[concat(parameters('blobContainerName'),'container')]",
+    "blobServiceName": "default"
   },
   "resources": [
     {
@@ -69,7 +70,7 @@
         {
           "type": "blobServices",
           "apiVersion": "2019-06-01",
-          "name": "default",
+          "name": "[variables('blobServiceName')]",
           "dependsOn": [
             "[variables('storageUniqueName')]"
           ],
@@ -85,7 +86,10 @@
               "name": "[variables('blobContainerUniqueName')]",
               "properties": {
                 "publicAccess": "None"
-              }
+              },
+              "dependsOn": [
+                "[variables('blobServiceName')]"
+              ]
             }
           ]
         }

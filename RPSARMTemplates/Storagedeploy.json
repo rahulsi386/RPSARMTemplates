@@ -96,14 +96,5 @@
       ]
     }
   ],
-  "outputs": {
-    "storageAccountEndpoint": {
-      "type": "string",
-      "value": "[reference(variables('storageUniqueName')).primaryEndpoints]"
-    },
-    "storageContainerEndpoint": {
-      "type": "string",
-      "value": "[reference(variables('storageUniqueName')).primaryEndpoints]"
-    }
-  }
+  "outputs": {}
 }

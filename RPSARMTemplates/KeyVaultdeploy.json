@@ -66,10 +66,5 @@
       }
     }
   ],
-  "outputs": {
-    "keyVaultEndpoint": {
-      "type": "object",
-      "value": "[reference(variables('vaultUniqueName')).primaryEndpoints]"
-    }
-  }
+  "outputs": {}
 }

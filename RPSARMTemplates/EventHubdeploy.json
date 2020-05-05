@@ -67,14 +67,5 @@
       ]
     }
   ],
-  "outputs": {
-    "eventHubNamespaceConString": {
-      "type": "string",
-      "value": "[listKeys(variables('authRuleResourceId'),variables('eventHubApiVersion')).primaryConnectionString]"
-    },
-    "eventHubSASPrimaryKey": {
-      "type": "string",
-      "value": "[listKeys(variables('authRuleResourceId'),variables('eventHubApiVersion')).keys[0]]"
-    }
-  }
+  "outputs": {}
 }

@@ -109,16 +109,7 @@
       ]
     }
   ],
-  "outputs": {
-    "serviceBusNamespaceConString": {
-      "type": "string",
-      "value": "[listKeys(variables('authRuleResourceId'),variables('serviceBusApiVersion')).primaryConnectionString]"
-    },
-    "serviceBusSASPrimaryKey": {
-      "type": "string",
-      "value": "[listKeys(variables('authRuleResourceId'),variables('serviceBusApiVersion')).keys[0]]"
-    }
-  }
+  "outputs": {}
 }
 
 

@@ -5,7 +5,7 @@
     "serviceBusNamespace": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25
+      "maxLength": 35
     },
     "serviceBusNamespaceLocation": {
       "type": "string",
@@ -16,23 +16,28 @@
         "North Europe",
         "West Europe"
       ],
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "West Europe"
     },
     "serviceBusQueueName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25
+      "maxLength": 35
     },
     "serviceBusTopicName": {
       "type": "string",
       "minLength": 5,
-      "maxLength": 25
+      "maxLength": 35
+    },
+    "serviceBusTopicSubscriptionName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 35
     }
   },
   "variables": {
-    "serviceBusNamespaceUniqueName": "[concat(parameters('serviceBusNamespace'),uniqueString(resourceGroup().id))]",
-    "serviceBusQueueUniqueName": "[concat(parameters('serviceBusQueueName'),resourceGroup().id)]",
-    "serviceBusTopicUniqueName": "[concat(parameters('serviceBusTopicName'),resourceGroup().id)]",
+    "serviceBusNamespaceUniqueName": "[concat('srvbus-ns-',parameters('serviceBusNamespace'))]",
+    "serviceBusQueueUniqueName": "[concat('srvbus-queue-',parameters('serviceBusQueueName'))]",
+    "serviceBusTopicUniqueName": "[concat('srvbus-topic-',parameters('serviceBusTopicName'))]",
     "defaultSASKeyName": "RootManageSharedAccessKey",
     "serviceBusApiVersion": "2018-01-01-preview",
     "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules',variables('serviceBusNamespaceUniqueName'),variables('defaultSASKeyName'))]"
@@ -40,7 +45,7 @@
   "resources": [
     {
       "metadata": {
-        "description": "This template definition craetes Service Bus Namespace and a queue"
+        "description": "This template definition craetes Service Bus Namespace, a queue, a topic and its subscription"
       },
       "type": "Microsoft.ServiceBus/namespaces",
       "apiVersion": "2018-01-01-preview",
@@ -61,7 +66,12 @@
             "[variables('serviceBusNamespaceUniqueName')]"
           ],
           "properties": {
-            "maxSizeInMegabytes": 4096
+            "maxSizeInMegabytes": 4096,
+            "defaultMessageTimeToLive": "P1D",
+            "enablePartitioning": true,
+            "lockDuration": "PT30S",
+            "maxDeliveryCount": 5,
+            "status": "Active"
           }
         },
         {
@@ -76,9 +86,25 @@
             "enablePartitioning": true,
             "metadata": {
               "description": "The Time to Live properties takes vaule in ISO 8601 format which is P1Y3M10DT1H13M23S where P stands for period and T for Time"
-            }
+            },
             "defaultMessageTimeToLive": "P14D"
-          }
+          },
+          "resources": [
+            {
+              "type": "subscriptions",
+              "apiVersion": "2017-04-01",
+              "name": "[parameters('serviceBusTopicSubscriptionName')]",
+              "properties": {
+                "defaultMessageTimeToLive": "P10D",
+                "lockDuration": "PT30S",
+                "maxDeliveryCount": 10,
+                "status": "Active"
+              },
+              "dependsOn": [
+                "[variables('serviceBusTopicUniqueName')]"
+              ]
+            }
+          ]
         }
       ]
     }

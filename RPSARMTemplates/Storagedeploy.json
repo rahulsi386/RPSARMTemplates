@@ -98,7 +98,7 @@
   ],
   "outputs": {
     "storageAccountEndpoint": {
-      "type": "object",
+      "type": "string",
       "value": "[reference(variables('storageUniqueName')).primaryEndpoints]"
     },
     "storageContainerEndpoint": {
